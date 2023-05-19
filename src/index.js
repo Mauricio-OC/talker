@@ -1,5 +1,7 @@
 const express = require('express');
 const { idData, readFiles } = require('./utils/readFile');
+const { validateEmail, validatePassword } = require('./utils/emailValidate');
+const createToken = require('./utils/createToken');
 
 const app = express();
 app.use(express.json());
@@ -25,6 +27,12 @@ if (talkers) {
 }
 return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 });
+
+app.post('/login', validateEmail,
+ validatePassword, async (_req, res) => {
+  const token = createToken();
+   return res.status(200).json({ token });
+ });
 
 app.listen(PORT, () => {
   console.log('Online');
